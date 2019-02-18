@@ -13,8 +13,8 @@ import unittest
 
 import pytest
 
-from cnxdb.ident_hash import (CNXHash, IdentHashSyntaxError, IdentHashShortId,
-                              IdentHashMissingVersion)
+from cnxtransforms.ident_hash import (
+    CNXHash, IdentHashSyntaxError, IdentHashShortId, IdentHashMissingVersion)
 
 
 def py3_too_old(*args):
@@ -26,7 +26,7 @@ def py3_too_old(*args):
 class SplitIdentTestCase(unittest.TestCase):
 
     def call_target(self, *args, **kwargs):
-        from cnxdb.ident_hash import split_ident_hash
+        from cnxtransforms.ident_hash import split_ident_hash
         return split_ident_hash(*args, **kwargs)
 
     def test_empty_value(self):
@@ -73,7 +73,7 @@ class SplitIdentTestCase(unittest.TestCase):
         # Case for testing for an invalid identifier.
         ident_hash = "not-a-valid-id@"
 
-        from cnxdb.ident_hash import IdentHashSyntaxError
+        from cnxtransforms.ident_hash import IdentHashSyntaxError
         with self.assertRaises(IdentHashSyntaxError):
             self.call_target(ident_hash)
 
@@ -81,7 +81,7 @@ class SplitIdentTestCase(unittest.TestCase):
         # Case for testing the ident-hash's syntax guards.
         ident_hash = "85e57f7902b347d28eedc1bbb1e1d5c2@1.2@select*frommodules"
 
-        from cnxdb.ident_hash import IdentHashSyntaxError
+        from cnxtransforms.ident_hash import IdentHashSyntaxError
         with self.assertRaises(IdentHashSyntaxError):
             self.call_target(ident_hash)
 
@@ -143,7 +143,7 @@ class SplitIdentTestCase(unittest.TestCase):
 class JoinIdentTestCase(unittest.TestCase):
 
     def call_target(self, *args, **kwargs):
-        from cnxdb.ident_hash import join_ident_hash
+        from cnxtransforms.ident_hash import join_ident_hash
         return join_ident_hash(*args, **kwargs)
 
     def test(self):
