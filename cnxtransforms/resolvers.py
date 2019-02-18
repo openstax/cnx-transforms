@@ -13,7 +13,7 @@ import sys
 
 from lxml import etree
 
-from cnxdb.ident_hash import split_ident_hash, join_ident_hash
+from cnxtransforms.ident_hash import split_ident_hash, join_ident_hash
 
 
 __all__ = (

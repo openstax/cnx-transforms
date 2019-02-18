@@ -37,7 +37,7 @@ class TestAbstractToHtml(BaseTestCase):
         """Call the target function. This wrapping takes care of the
         connection parameters.
         """
-        from cnxdb.triggers.transforms.producers import (
+        from cnxtransforms.producers import (
             produce_html_for_abstract)
         return produce_html_for_abstract(self.faux_plpy,
                                          *args, **kwargs)
@@ -134,7 +134,7 @@ class TestAbstractToHtml(BaseTestCase):
             (abstractid,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import MissingAbstract
+        from cnxtransforms.producers import MissingAbstract
         with pytest.raises(MissingAbstract):
             self.call_target(document_ident)
 
@@ -192,7 +192,7 @@ class TestModuleToHtml(BaseTestCase):
         """Call the target function. This wrapping takes care of the
         connection parameters.
         """
-        from cnxdb.triggers.transforms.producers import produce_html_for_module
+        from cnxtransforms.producers import produce_html_for_module
         return produce_html_for_module(self.faux_plpy,
                                        *args, **kwargs)
 
@@ -206,7 +206,7 @@ class TestModuleToHtml(BaseTestCase):
             (ident, filename,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import MissingDocumentOrSource
+        from cnxtransforms.producers import MissingDocumentOrSource
         with pytest.raises(MissingDocumentOrSource) as exc_info:
             self.call_target(ident, filename)
         exception = exc_info.value
@@ -219,7 +219,7 @@ class TestModuleToHtml(BaseTestCase):
         #   can't be found.
         ident, filename = 0, 'index.cnxml'
 
-        from cnxdb.triggers.transforms.producers import MissingDocumentOrSource
+        from cnxtransforms.producers import MissingDocumentOrSource
         with pytest.raises(MissingDocumentOrSource) as exc_info:
             self.call_target(ident, filename)
         exception = exc_info.value
@@ -329,7 +329,7 @@ class TestModuleToHtml(BaseTestCase):
             "VALUES (2, %s, 'index.cnxml.html')", (fileid,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import IndexFileExistsError
+        from cnxtransforms.producers import IndexFileExistsError
 
         with pytest.raises(IndexFileExistsError) as exc_info:
             self.call_target(2, overwrite_html=False)
@@ -411,7 +411,7 @@ class TestAbstractToCnxml(BaseTestCase):
         """Call the target function. This wrapping takes care of the
         connection parameters.
         """
-        from cnxdb.triggers.transforms.producers import (
+        from cnxtransforms.producers import (
             produce_cnxml_for_abstract)
         return produce_cnxml_for_abstract(self.faux_plpy,
                                           *args, **kwargs)
@@ -509,7 +509,7 @@ class TestAbstractToCnxml(BaseTestCase):
             (abstractid,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import MissingAbstract
+        from cnxtransforms.producers import MissingAbstract
         with pytest.raises(MissingAbstract):
             self.call_target(document_ident)
 
@@ -520,7 +520,7 @@ class TestModuleToCnxml(BaseTestCase):
         """Call the target function. This wrapping takes care of the
         connection parameters.
         """
-        from cnxdb.triggers.transforms.producers import (
+        from cnxtransforms.producers import (
             produce_cnxml_for_module)
         return produce_cnxml_for_module(self.faux_plpy,
                                         *args, **kwargs)
@@ -535,7 +535,7 @@ class TestModuleToCnxml(BaseTestCase):
             (ident, filename,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import MissingDocumentOrSource
+        from cnxtransforms.producers import MissingDocumentOrSource
         with pytest.raises(MissingDocumentOrSource) as exc_info:
             self.call_target(ident, filename)
         exception = exc_info.value
@@ -548,7 +548,7 @@ class TestModuleToCnxml(BaseTestCase):
         #   can't be found.
         ident, filename = 0, 'index.cnxml'
 
-        from cnxdb.triggers.transforms.producers import MissingDocumentOrSource
+        from cnxtransforms.producers import MissingDocumentOrSource
         with pytest.raises(MissingDocumentOrSource) as exc_info:
             self.call_target(ident, filename)
         exception = exc_info.value
@@ -644,7 +644,7 @@ class TestModuleToCnxml(BaseTestCase):
             "VALUES (2, %s, 'index.html.cnxml')", (fileid,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import IndexFileExistsError
+        from cnxtransforms.producers import IndexFileExistsError
 
         with pytest.raises(IndexFileExistsError) as exc_info:
             self.call_target(2, overwrite=False)
@@ -683,7 +683,7 @@ class TestModuleToCnxml(BaseTestCase):
             "VALUES (2, %s, 'index.html.cnxml')", (fileid,))
         self.db_cursor.connection.commit()
 
-        from cnxdb.triggers.transforms.producers import IndexFileExistsError
+        from cnxtransforms.producers import IndexFileExistsError
 
         with pytest.raises(IndexFileExistsError) as exc_info:
             self.call_target(2, overwrite=False)
