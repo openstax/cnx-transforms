@@ -1,0 +1,2 @@
+# This project's dependencies
+rhaptos.cnxmlutils
