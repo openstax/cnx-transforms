@@ -1,0 +1,44 @@
+language: python
+python:
+  - "2.7"
+  - "3.5"
+sudo: required
+dist: precise
+addons:
+  postgresql: "9.4"
+  apt:
+    packages:
+      - libxml2-dev
+      - libxslt-dev
+      - postgresql-plpython-9.4
+      - postgresql-plpython3-9.4
+      - postgresql-server-dev-9.4
+before_install:
+  # Uninstall default pytest because it is old
+  - pip uninstall -y pytest
+  - pip install -r requirements/lint.txt
+  - pip install -r requirements/test.txt
+  - flake8 cnxtransforms/ tests/
+
+  # Install plxslt
+  - git clone https://github.com/petere/plxslt.git
+  - cd plxslt && sudo make && sudo make install && cd ..
+
+  # Install the coverage utility and codecov reporting utility
+  - pip install codecov
+before_script:
+  # Set up postgres roles
+  - psql -U postgres -c "CREATE USER tester WITH SUPERUSER PASSWORD 'tester';"
+  # Set up the database
+  - createdb -U postgres -O tester testing
+  - git clone https://github.com/okbob/session_exec.git
+  - cd session_exec
+  - make USE_PGXS=1 -e && sudo make USE_PGXS=1 -e install
+  - cd ..
+script:
+  - py.test --cov=cnxtransforms
+after_success:
+  - codecov
+
+notifications:
+  email: false
