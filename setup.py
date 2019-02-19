@@ -5,6 +5,13 @@ install_requires = (
     'rhaptos.cnxmlutils',
 )
 
+tests_require = (
+    'cnx-archive',
+    'psycopg2',
+    'pytest',
+    'pytest-cov',
+)
+
 setup(
     name='cnx-transforms',
     author='Connexions team',
@@ -12,6 +19,7 @@ setup(
     url='https://github.com/openstax/cnx-transforms',
     license='LGPL, see also LICENSE.txt',
     install_requires=install_requires,
+    tests_require=tests_require,
     packages=find_packages(),
     include_package_data=True,
 )
