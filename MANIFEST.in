@@ -1,1 +1,3 @@
 recursive-include cnxtransforms/xsl *.*
+include versioneer.py
+include cnxtransforms/_version.py

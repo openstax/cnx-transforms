@@ -9,3 +9,7 @@
 from .converters import *  # noqa
 from .resolvers import *  # noqa
 from .producers import *  # noqa
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
