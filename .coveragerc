@@ -2,5 +2,6 @@
 
 [report]
 omit =
+  cnxtransforms/_version.py
 exclude_lines =
   pragma: no cover
