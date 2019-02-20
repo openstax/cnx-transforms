@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 
+setup_requires = (
+    'pytest-runner',
+)
+
 install_requires = (
     'rhaptos.cnxmlutils',
 )
@@ -18,6 +22,7 @@ setup(
     author_email='info@cnx.org',
     url='https://github.com/openstax/cnx-transforms',
     license='LGPL, see also LICENSE.txt',
+    setup_requires=setup_requires,
     install_requires=install_requires,
     tests_require=tests_require,
     packages=find_packages(exclude=['tests', 'tests.*']),
