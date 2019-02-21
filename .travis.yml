@@ -16,6 +16,8 @@ addons:
 before_install:
   # Uninstall default pytest because it is old
   - pip uninstall -y pytest
+  # Install the local cnx-transforms
+  - pip install .
   - pip install -r requirements/lint.txt
   - pip install -r requirements/test.txt
   - flake8 cnxtransforms/ tests/
