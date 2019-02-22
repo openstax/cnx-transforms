@@ -1,4 +1,7 @@
+1.0.1
+-----
 
+- Update Jenkins to upload a universal wheel to pypi (#4, #5)
 
 1.0.0
 -----
