@@ -13,8 +13,7 @@ from lxml import etree
 
 from . import ensure_bytes
 from .converters import (
-    DEFAULT_XMLPARSER,
-    cnxml_to_html, cnxml_to_full_html,
+    cnxml_abstract_to_html, cnxml_to_full_html,
     html_to_cnxml, html_to_full_cnxml,
 )
 from .resolvers import resolve_cnxml_urls, resolve_html_urls
@@ -138,23 +137,7 @@ def produce_cnxml_for_abstract(plpy, document_ident):
 def transform_abstract_to_html(abstract, document_ident, plpy):
     """Convert abstract to html."""
     warning_messages = None
-    abstract = '<document xmlns="http://cnx.rice.edu/cnxml" '\
-        'xmlns:m="http://www.w3.org/1998/Math/MathML" '\
-        'xmlns:md="http://cnx.rice.edu/mdml/0.4" '\
-        'xmlns:bib="http://bibtexml.sf.net/" '\
-        'xmlns:q="http://cnx.rice.edu/qml/1.0" '\
-        'cnxml-version="0.7"><content>{}</content></document>'\
-        .format(abstract)
-    # Does it have a wrapping tag?
-    abstract_html = ensure_bytes(cnxml_to_html(abstract))
-
-    # Rename the containing element, because the abstract is a snippet,
-    #   not a document.
-    abstract_html = etree.parse(BytesIO(abstract_html), DEFAULT_XMLPARSER)
-    container = abstract_html.xpath('/*')[0]  # a 'body' tag.
-    container.tag = 'div'
-    # Re-assign and stringify to what it should be without the fixes.
-    abstract_html = etree.tostring(abstract_html)
+    abstract_html = cnxml_abstract_to_html(abstract)
 
     # Then fix up content references in the abstract.
     fixed_html, bad_refs = resolve_cnxml_urls(BytesIO(abstract_html),
