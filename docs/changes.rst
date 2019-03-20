@@ -1,3 +1,9 @@
+1.1.0
+-----
+
+- Make the cnxml abstract to html logic reusable by adding
+  ``cnxml_abstract_to_html`` (#7)
+
 1.0.1
 -----
 
