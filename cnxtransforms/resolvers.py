@@ -422,36 +422,35 @@ class CnxmlToHtmlReferenceResolver(BaseReferenceResolver):
         bad_references = []
 
         media_xpath = {
-            '//html:img': ('src', 'longdesc'),
-            '//html:audio': 'src',
-            '//html:video': 'src',
-            '//html:object': 'data',
-            '//html:object/html:embed': 'src',
-            '//html:source': 'src',
-            '//html:span': ('data-src', 'data-longdesc')
+            '//html:img': ('src', 'longdesc',),
+            '//html:audio': ('src',),
+            '//html:video': ('src',),
+            '//html:object': ('data',),
+            '//html:object/html:embed': ('src',),
+            '//html:source': ('src',),
+            '//html:span': ('data-src', 'data-longdesc',),
         }
 
-        for xpath, attr in media_xpath.items():
+        for xpath, attrs in media_xpath.items():
             for elem in self.apply_xpath(xpath):
-                filename = elem.get(attr)
-                if not filename or self._should_ignore_reference(filename):
-                    continue
-
-                try:
-                    ref_type, payload = parse_legacy_reference(filename)
-                    filename, module_id, version = payload
-                except ValueError:
-                    exc = InvalidReference(self.document_ident, filename)
-                    bad_references.append(exc)
-                    continue
-
-                try:
-                    info = self.get_resource_info(filename, module_id, version)
-                except ReferenceNotFound as exc:
-                    bad_references.append(exc)
-                else:
-                    elem.set(attr, '/resources/{}/{}'
-                                   .format(info['hash'], filename))
+                for attr in attrs:
+                    filename = elem.get(attr)
+                    if not filename or self._should_ignore_reference(filename):
+                        continue
+                    try:
+                        ref_type, payload = parse_legacy_reference(filename)
+                        filename, module_id, version = payload
+                    except ValueError:
+                        exc = InvalidReference(self.document_ident, filename)
+                        bad_references.append(exc)
+                        continue
+                    try:
+                        info = self.get_resource_info(filename, module_id, version)
+                    except ReferenceNotFound as exc:
+                        bad_references.append(exc)
+                    else:
+                        elem.set(attr, '/resources/{}/{}'
+                                    .format(info['hash'], filename))
         return bad_references
 
     def fix_anchor_references(self):
