@@ -422,7 +422,9 @@ class CnxmlToHtmlReferenceResolver(BaseReferenceResolver):
         bad_references = []
 
         media_xpath = {
+            '//html:span': 'data-longdesc',
             '//html:img': 'src',
+            '//html:img': 'longdesc',
             '//html:audio': 'src',
             '//html:video': 'src',
             '//html:object': 'data',
