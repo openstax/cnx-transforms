@@ -445,12 +445,13 @@ class CnxmlToHtmlReferenceResolver(BaseReferenceResolver):
                         bad_references.append(exc)
                         continue
                     try:
-                        info = self.get_resource_info(filename, module_id, version)
+                        info = self.get_resource_info(filename, module_id,
+                                                      version)
                     except ReferenceNotFound as exc:
                         bad_references.append(exc)
                     else:
                         elem.set(attr, '/resources/{}/{}'
-                                    .format(info['hash'], filename))
+                                 .format(info['hash'], filename))
         return bad_references
 
     def fix_anchor_references(self):
