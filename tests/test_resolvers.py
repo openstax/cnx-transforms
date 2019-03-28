@@ -200,6 +200,7 @@ class TestHtmlReferenceResolution(BaseTestCase):
             b'd47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"' \
             b'/></body></html>'
 
+        # Test 2 bad media reference fixes
         resolver_media = ReferenceResolver(io.BytesIO(
             b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
             b'<img src="nope.jpg" longdesc="nope2.jpg">'
