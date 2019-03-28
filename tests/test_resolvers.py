@@ -217,7 +217,8 @@ class TestHtmlReferenceResolution(BaseTestCase):
 
         resolver_media = ReferenceResolver(io.BytesIO(
             b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
-            b'<img src="https://legacy.cnx.org/content/m19610/latest/eip-edit-new-table.png">'
+            b'<img src="https://legacy.cnx.org/content/m19610/'
+            b'latest/eip-edit-new-table.png">'
             b'</img></body></html>'),
             self.faux_plpy, 3)
         assert resolver_media.fix_media_references() == []
