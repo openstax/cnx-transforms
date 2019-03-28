@@ -208,6 +208,20 @@ class TestHtmlReferenceResolution(BaseTestCase):
             self.faux_plpy, 3)
         assert len(resolver_media.fix_media_references()) == 2
 
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<audio src="">'
+            b'</audio></body></html>'),
+            self.faux_plpy, 3)
+        assert resolver_media.fix_media_references() == []
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="https://legacy.cnx.org/content/m19610/latest/eip-edit-new-table.png">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+        assert resolver_media.fix_media_references() == []
+
         # Test file not found
         with pytest.raises(ReferenceNotFound):
             resolver.get_resource_info('PhET_Icon.png')
