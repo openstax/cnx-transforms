@@ -193,12 +193,12 @@ class TestHtmlReferenceResolution(BaseTestCase):
             self.faux_plpy, 3)
 
         assert resolver_media.fix_media_references() == []
-        assert etree.tostring(resolver_media.content) == '<html ' \
-            'xmlns="http://www.w3.org/1999/xhtml"><body>' \
-            '<img src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/' \
-            'Figure_01_00_01.jpg" longdesc="/resources/' \
-            'd47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>' \
-            '</body></html>'
+        assert etree.tostring(resolver_media.content) == b'<html ' \
+            b'xmlns="http://www.w3.org/1999/xhtml"><body>' \
+            b'<img src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/' \
+            b'Figure_01_00_01.jpg" longdesc="/resources/' \
+            b'd47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>' \
+            b'</body></html>'
 
         resolver_media = ReferenceResolver(io.BytesIO(
             b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
