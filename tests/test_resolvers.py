@@ -183,6 +183,23 @@ class TestHtmlReferenceResolution(BaseTestCase):
         resolver = ReferenceResolver(io.BytesIO(b'<html></html>'),
                                      self.faux_plpy, 3)
 
+        # test media reference fixes
+        assert resolver.fix_media_references() == []
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="Figure_01_00_01.jpg" longdesc="Figure_01_00_01.jpg">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+
+        assert resolver_media.fix_media_references() == []
+        assert etree.tostring(resolver_media.content) == '<html ' \
+            'xmlns="http://www.w3.org/1999/xhtml"><body>' \
+            '<img src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/' \
+            'Figure_01_00_01.jpg" longdesc="/resources/' \
+            'd47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>' \
+            '</body></html>'
+
         # Test file not found
         with pytest.raises(ReferenceNotFound):
             resolver.get_resource_info('PhET_Icon.png')
