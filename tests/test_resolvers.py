@@ -11,6 +11,10 @@ import io
 import sys
 
 import pytest
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 from lxml import etree
 # XXX (2017-10-12) deps-on-cnx-archive: Depends on cnx-archive
 from cnxarchive.config import TEST_DATA_DIRECTORY
@@ -101,10 +105,12 @@ class TestHtmlReferenceResolution(BaseTestCase):
             Module link with collection and version
         </a>
         <img src=" Figure_01_00_01.jpg"/>
+        <img src="Figure_01_00_01.jpg" longdesc="Figure_01_00_01.jpg"/>
         <img src="/content/m42092/latest/PhET_Icon.png"/>
         <img src="/content/m42092/1.4/PhET_Icon.png"/>
         <img src="/content/m42092/1.3/PhET_Icon.png"/>
         <span data-src="Figure_01_00_01.jpg"/>
+        <span data-longdesc="Figure_01_00_01.jpg"/>
 
         <audio src="Figure_01_00_01.jpg" id="music" mime-type="audio/mpeg"></audio>
 
@@ -149,10 +155,12 @@ class TestHtmlReferenceResolution(BaseTestCase):
             Module link with collection and version
         </a>
         <img src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>
+        <img src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg" longdesc="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>
         <img src="/resources/075500ad9f71890a85fe3f7a4137ac08e2b7907c/PhET_Icon.png"/>
         <img src="/resources/075500ad9f71890a85fe3f7a4137ac08e2b7907c/PhET_Icon.png"/>
         <img src="/content/m42092/1.3/PhET_Icon.png"/>
         <span data-src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>
+        <span data-longdesc="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"/>
 
         <audio src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg" id="music" mime-type="audio/mpeg"/>
 
@@ -170,6 +178,25 @@ class TestHtmlReferenceResolution(BaseTestCase):
     </body>
 </html>'''  # noqa: E501
 
+    @patch('cnxtransforms.resolvers.parse_legacy_reference',
+           **{'return_value.raiseError.side_effect': ValueError("test")})
+    def test_get_resource_info_value_error(self, parse_legacy):
+        from cnxtransforms.resolvers import (
+            CnxmlToHtmlReferenceResolver as ReferenceResolver,
+            InvalidReference
+        )
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="Figure_01_00_01.jpg" longdesc="Figure_01_00_01.jpg">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+
+        bad_ref = resolver_media.fix_media_references()
+        assert len(bad_ref) == 2
+        assert type(bad_ref[0]) == InvalidReference
+        assert type(bad_ref[1]) == InvalidReference
+
     def test_get_resource_info(self):
         from cnxtransforms.resolvers import (
             CnxmlToHtmlReferenceResolver as ReferenceResolver,
@@ -178,6 +205,49 @@ class TestHtmlReferenceResolution(BaseTestCase):
 
         resolver = ReferenceResolver(io.BytesIO(b'<html></html>'),
                                      self.faux_plpy, 3)
+
+        # test media reference fixes
+        assert resolver.fix_media_references() == []
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="Figure_01_00_01.jpg" longdesc="Figure_01_00_01.jpg">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+
+        assert resolver_media.fix_media_references() == []
+        assert etree.tostring(resolver_media.content) == b'<html ' \
+            b'xmlns="http://www.w3.org/1999/xhtml"><body>' \
+            b'<img src="/resources/d47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/' \
+            b'Figure_01_00_01.jpg" longdesc="/resources/' \
+            b'd47864c2ac77d80b1f2ff4c4c7f1b2059669e3e9/Figure_01_00_01.jpg"' \
+            b'/></body></html>'
+
+        # Test 2 bad media reference fixes
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="nope.jpg" longdesc="nope2.jpg">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+        bad_ref = resolver_media.fix_media_references()
+        assert len(bad_ref) == 2
+        assert type(bad_ref[0]) == ReferenceNotFound
+        assert type(bad_ref[1]) == ReferenceNotFound
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<audio src="">'
+            b'</audio></body></html>'),
+            self.faux_plpy, 3)
+        assert resolver_media.fix_media_references() == []
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="https://legacy.cnx.org/content/m19610/'
+            b'latest/eip-edit-new-table.png">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+        assert resolver_media.fix_media_references() == []
 
         # Test file not found
         with pytest.raises(ReferenceNotFound):
