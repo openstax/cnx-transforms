@@ -11,6 +11,10 @@ import io
 import sys
 
 import pytest
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 from lxml import etree
 # XXX (2017-10-12) deps-on-cnx-archive: Depends on cnx-archive
 from cnxarchive.config import TEST_DATA_DIRECTORY
@@ -174,6 +178,26 @@ class TestHtmlReferenceResolution(BaseTestCase):
     </body>
 </html>'''  # noqa: E501
 
+    @patch('cnxtransforms.resolvers.parse_legacy_reference', **{'return_value.raiseError.side_effect': ValueError("test")})
+    def test_get_resource_info_value_error(self, parse_legacy):
+        from cnxtransforms.resolvers import (
+            CnxmlToHtmlReferenceResolver as ReferenceResolver,
+            ReferenceNotFound,
+            InvalidReference
+        )
+
+        resolver_media = ReferenceResolver(io.BytesIO(
+            b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'
+            b'<img src="Figure_01_00_01.jpg" longdesc="Figure_01_00_01.jpg">'
+            b'</img></body></html>'),
+            self.faux_plpy, 3)
+
+        bad_ref = resolver_media.fix_media_references()
+        assert len(bad_ref) == 2
+        assert type(bad_ref[0]) == InvalidReference
+        assert type(bad_ref[1]) == InvalidReference
+
+
     def test_get_resource_info(self):
         from cnxtransforms.resolvers import (
             CnxmlToHtmlReferenceResolver as ReferenceResolver,
@@ -206,7 +230,10 @@ class TestHtmlReferenceResolution(BaseTestCase):
             b'<img src="nope.jpg" longdesc="nope2.jpg">'
             b'</img></body></html>'),
             self.faux_plpy, 3)
-        assert len(resolver_media.fix_media_references()) == 2
+        bad_ref = resolver_media.fix_media_references()
+        assert len(bad_ref) == 2
+        assert type(bad_ref[0]) == ReferenceNotFound
+        assert type(bad_ref[1]) == ReferenceNotFound
 
         resolver_media = ReferenceResolver(io.BytesIO(
             b'<html xmlns="http://www.w3.org/1999/xhtml"><body>'

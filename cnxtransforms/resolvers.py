@@ -440,7 +440,7 @@ class CnxmlToHtmlReferenceResolver(BaseReferenceResolver):
                     try:
                         ref_type, payload = parse_legacy_reference(filename)
                         filename, module_id, version = payload
-                    except ValueError:  # pragma: no cover
+                    except ValueError:
                         exc = InvalidReference(self.document_ident, filename)
                         bad_references.append(exc)
                         continue
