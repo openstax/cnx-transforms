@@ -1,3 +1,8 @@
+1.2.0
+-----
+
+- Add reference handling for longdesc attributes (#8)
+
 1.1.0
 -----
 
