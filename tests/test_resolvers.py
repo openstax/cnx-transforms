@@ -178,11 +178,11 @@ class TestHtmlReferenceResolution(BaseTestCase):
     </body>
 </html>'''  # noqa: E501
 
-    @patch('cnxtransforms.resolvers.parse_legacy_reference', **{'return_value.raiseError.side_effect': ValueError("test")})
+    @patch('cnxtransforms.resolvers.parse_legacy_reference',
+           **{'return_value.raiseError.side_effect': ValueError("test")})
     def test_get_resource_info_value_error(self, parse_legacy):
         from cnxtransforms.resolvers import (
             CnxmlToHtmlReferenceResolver as ReferenceResolver,
-            ReferenceNotFound,
             InvalidReference
         )
 
@@ -196,7 +196,6 @@ class TestHtmlReferenceResolution(BaseTestCase):
         assert len(bad_ref) == 2
         assert type(bad_ref[0]) == InvalidReference
         assert type(bad_ref[1]) == InvalidReference
-
 
     def test_get_resource_info(self):
         from cnxtransforms.resolvers import (
