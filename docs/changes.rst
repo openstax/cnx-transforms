@@ -1,3 +1,8 @@
+1.3.0
+-----
+
+- Pin rhaptos.cnxmlutils to 2.2.0
+
 1.2.3
 -----
 
