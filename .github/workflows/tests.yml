@@ -34,12 +34,12 @@ jobs:
         run: |
           pip install -U setuptools wheel
           python -c "import setuptools; print(setuptools.__version__)"
-      - name: Uninstall pre-installed PostgreSQL 13.3
+      - name: Uninstall pre-installed PostgreSQL 14
         # This is mostly to ensure pg_config doesn't provide incorrect information as
         # that will break the build of session_exec later
         run: |
           apt list --installed | grep postgresql
-          sudo apt-get --purge remove postgresql postgresql-13 postgresql-client postgresql-client-13 postgresql-client-common postgresql-common
+          sudo apt-get --purge remove postgresql postgresql-14 postgresql-client postgresql-client-14 postgresql-client-common postgresql-common
       - name: Install PostgreSQL 9.4
         run: |
           sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
