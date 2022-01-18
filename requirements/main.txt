@@ -1,2 +1,2 @@
 # This project's dependencies
-rhaptos.cnxmlutils==2.5.0
+rhaptos.cnxmlutils==2.6.0
