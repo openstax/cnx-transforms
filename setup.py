@@ -8,7 +8,6 @@ setup_requires = (
 )
 
 install_requires = (
-    'rhaptos.cnxmlutils',
 )
 
 tests_require = (
