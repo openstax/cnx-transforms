@@ -150,7 +150,7 @@ class CNXHash(uuid.UUID):
     def uuid2base64(cls, identifier):
         if isinstance(identifier, basestring):
             identifier = uuid.UUID(identifier)
-        elif not(isinstance(identifier, uuid.UUID)):
+        elif not (isinstance(identifier, uuid.UUID)):
             raise TypeError("must be uuid or string.")
         identifier = base64.urlsafe_b64encode(identifier.bytes)
         identifier = identifier.rstrip(cls._HASH_PADDING_CHAR.encode('utf-8'))
@@ -158,7 +158,7 @@ class CNXHash(uuid.UUID):
 
     @classmethod
     def base642uuid(cls, identifier):
-        if not(isinstance(identifier, basestring)):
+        if not (isinstance(identifier, basestring)):
             raise TypeError("must be a string.")
         if isinstance(identifier, bytes):
             identifier = identifier.decode('utf-8')

@@ -3,6 +3,5 @@ psycopg2
 pytest
 pytest-cov
 
--e git+https://github.com/Connexions/rhaptos.cnxmlutils.git#egg=rhaptos.cnxmlutils
 # FIXME circular dependency here...
 -e git+https://github.com/Connexions/cnx-archive.git#egg=cnx-archive
