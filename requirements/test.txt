@@ -2,6 +2,7 @@
 psycopg2
 pytest
 pytest-cov
+pytest-snapshot
 
 # FIXME circular dependency here...
 -e git+https://github.com/Connexions/cnx-archive.git#egg=cnx-archive
