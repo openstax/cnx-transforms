@@ -8,13 +8,13 @@ setup_requires = (
 )
 
 install_requires = (
-    'rhaptos.cnxmlutils',
 )
 
 tests_require = (
     'cnx-archive',
     'psycopg2',
     'pytest',
+    'pytest-snapshot',
     'pytest-cov',
 )
 

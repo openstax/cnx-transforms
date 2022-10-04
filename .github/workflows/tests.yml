@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: ["2.7", "3.6"]
+        python-version: ["3.6"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -66,7 +66,7 @@ jobs:
           flake8 cnxtransforms/ tests/
       - name: Test
             # Note: The --ignore=src in the py.test invocation below is due to
-            # the git dependencies for cnx-archive and rhaptos.cnxmlutils being
+            # the git dependencies for cnx-archive being
             # pulled to ./src on the CI server.
         run: |
           py.test --cov=cnxtransforms --ignore=src
