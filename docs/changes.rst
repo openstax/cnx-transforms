@@ -1,3 +1,8 @@
+1.10.1
+-----
+
+- move rhaptos.cnxmlutils code into this repo
+
 1.10.0
 -----
 
