@@ -11,8 +11,6 @@ install_requires = (
 )
 
 tests_require = (
-    'cnx-archive',
-    'psycopg2',
     'pytest',
     'pytest-snapshot',
     'pytest-cov',

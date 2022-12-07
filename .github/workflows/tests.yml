@@ -3,8 +3,6 @@ name: tests
 on:
   pull_request:
   push:
-    branches:
-      - master
   schedule:
     - cron: '0 0 * * 0' # weekly
 jobs:
@@ -21,46 +19,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
-      - name: Install really old pip
-        # Using newer versions of pip causes issues with dependency resolution
-        # at least in part due to the circular dependency with cnx-archive
-        # for tests. The version 9.0.1 comes from the last known successful
-        # Travis CI job where tests were running on Ubuntu 12.04 before things
-        # were moved over to GH actions and 18.04.
-        run: |
-          pip install pip==9.0.1
-          pip --version
-      - name: Update version of setuptools
-        run: |
-          pip install -U setuptools wheel
-          python -c "import setuptools; print(setuptools.__version__)"
-      - name: Uninstall pre-installed PostgreSQL 14
-        # This is mostly to ensure pg_config doesn't provide incorrect information as
-        # that will break the build of session_exec later
-        run: |
-          apt list --installed | grep postgresql
-          sudo apt-get --purge remove postgresql postgresql-14 postgresql-client postgresql-client-14 postgresql-client-common postgresql-common
-      - name: Install PostgreSQL 9.4
-        run: |
-          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-          sudo apt-get update
-          sudo apt-get -y install postgresql-plpython-9.4 postgresql-plpython3-9.4 postgresql-server-dev-9.4
-      - name: Setup database
-        run: |
-          sudo su postgres -c "psql -U postgres -c \"CREATE USER tester WITH SUPERUSER PASSWORD 'tester';\""
-          sudo su postgres -c "createdb -U postgres -O tester testing"
       - name: Install dependencies
         run: |
           sudo apt-get -y install libxml2-dev libxslt-dev
           pip install .
           pip install -r requirements/lint.txt
+          pip install -r requirements/main.txt
           pip install -r requirements/test.txt
           pip install codecov mock
-          git clone https://github.com/petere/plxslt.git
-          cd plxslt && sudo make && sudo make install && cd ..
-          git clone https://github.com/okbob/session_exec.git
-          cd session_exec && make USE_PGXS=1 -e && sudo make USE_PGXS=1 -e install && cd ..
       - name: Lint
         run: |
           flake8 cnxtransforms/ tests/
