@@ -1792,7 +1792,16 @@
 
 <xsl:template match="c:thead|c:tbody|c:tfoot">
   <xsl:element name="{local-name()}">
-    <xsl:apply-templates select="@*|node()"/>
+    <xsl:choose>
+      <xsl:when test="c:row">
+        <xsl:apply-templates select="@*|node()"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <tr>
+          <xsl:apply-templates select="@*|node()"/>
+        </tr>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:element>
 </xsl:template>
 
