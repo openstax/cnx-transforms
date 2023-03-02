@@ -1,4 +1,0 @@
-# The project's testing dependencies...
-pytest
-pytest-cov
-pytest-snapshot
